@@ -12,8 +12,10 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.ScaleGestureDetector
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
@@ -57,6 +59,10 @@ class RecordVideoActivity : AppCompatActivity() {
     private var recording: Recording? = null
     private lateinit var cameraExecutor: ExecutorService
 
+    private lateinit var scaleGestureDetector: ScaleGestureDetector
+    private var currentZoomRatio = 1f // 현재 줌 비율을 저장하는 변수
+
+    private var camera: Camera? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityRecordVideoBinding.inflate(layoutInflater)
@@ -69,11 +75,25 @@ class RecordVideoActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
-
+        viewBinding.viewFinder.setOnTouchListener { _, event ->
+            scaleGestureDetector.onTouchEvent(event)
+            return@setOnTouchListener true
+        }
         viewBinding.videoCaptureButton.setOnClickListener { captureVideo() }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
+        // ScaleGestureDetector 초기화
+        scaleGestureDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                // 핀치 제스처로 줌 인/아웃 비율 계산
+                val zoomRatio = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1f
+                currentZoomRatio = zoomRatio * detector.scaleFactor
+                // 줌 비율 설정
+                camera?.cameraControl?.setZoomRatio(currentZoomRatio)
+                return true
+            }
+        })
 
     }
 
@@ -111,6 +131,7 @@ class RecordVideoActivity : AppCompatActivity() {
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview,imageCapture,videoCapture)
+                camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, videoCapture)
 
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
