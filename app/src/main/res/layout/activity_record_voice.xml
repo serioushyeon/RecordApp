@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_dynamic_neutral90"
+    tools:context=".RecordVoiceActivity">
+
+    <com.serioushyeon.recordapp.SoundVisualizerView
+        android:id="@+id/soundVisualizerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/recordTimeTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RESET"
+        app:layout_constraintBottom_toBottomOf="@+id/recordVoiceButton"
+        app:layout_constraintEnd_toStartOf="@+id/recordVoiceButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recordVoiceButton"
+        tools:ignore="HardcodedText" />
+
+    <com.serioushyeon.recordapp.CountUpView
+        android:id="@+id/recordTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="00:00"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/recordVoiceButton"
+        app:layout_constraintLeft_toLeftOf="@id/recordVoiceButton"
+        app:layout_constraintRight_toRightOf="@id/recordVoiceButton"
+        tools:ignore="HardcodedText" />
+
+    <com.serioushyeon.recordapp.RecordButton
+        android:id="@+id/recordVoiceButton"
+        android:layout_width="100dp"
+        tools:src="@drawable/ic_recorde"
+        android:scaleType="fitCenter"
+        android:padding="25dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
