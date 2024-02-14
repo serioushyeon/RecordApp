@@ -1,6 +1,7 @@
 package com.serioushyeon.recordapp
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
@@ -138,7 +139,7 @@ class RecordVideoActivity : AppCompatActivity() {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/CameraX-Video")
+                put(MediaStore.Video.Media.RELATIVE_PATH, "Pictures/RecordAppVideo")
             }
         }
 
@@ -254,6 +255,7 @@ class RecordVideoActivity : AppCompatActivity() {
             }
         })
     }
+    @SuppressLint("Range")
     private fun getPath(contentResolver: ContentResolver, uri: Uri): String {
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null )
 

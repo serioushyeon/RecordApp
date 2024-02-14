@@ -87,7 +87,7 @@ class RecordVoiceActivity : AppCompatActivity() {
             val mediaStorageDir = File(
                 Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES
-                ), "MyApp"
+                ), "RecordAppAudio"
             )
             println("asd mediaStorageDir : $mediaStorageDir")
             if (!mediaStorageDir.exists()) {
