@@ -162,6 +162,10 @@ class RecordVoiceActivity : AppCompatActivity() {
             // clear
             soundVisualizerView.clearVisualization()
             recordTimeTextView.clearCountTime()
+            file = getOutputFile();
+            if (file != null) {
+                filename = file!!.absolutePath;
+            }
             state = State.BEFORE_RECORDING
         }
     }
