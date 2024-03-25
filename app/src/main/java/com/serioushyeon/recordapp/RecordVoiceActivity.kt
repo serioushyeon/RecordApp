@@ -192,24 +192,8 @@ class RecordVoiceActivity : AppCompatActivity() {
             release()
         }
         recorder = null
-
-        val values = ContentValues(10)
-
-        values.put(MediaStore.MediaColumns.TITLE, "Recorded")
-        values.put(MediaStore.Audio.Media.ALBUM, "Audio Album")
-        values.put(MediaStore.Audio.Media.ARTIST, "Mike")
-        values.put(MediaStore.Audio.Media.DISPLAY_NAME, "Recorded Audio")
-        values.put(MediaStore.Audio.Media.IS_RINGTONE, 1)
-        values.put(MediaStore.Audio.Media.IS_MUSIC, 1)
-        values.put(MediaStore.MediaColumns.DATE_ADDED, System.currentTimeMillis() / 1000)
-        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp4")
-        values.put(MediaStore.Audio.Media.DATA, filename)
-
-        val audioUri = contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
         filename?.let { uploadAudioToServerWithToken(it) }
-        if (audioUri == null) {
-            Log.d("SampleAudioRecorder", "Audio insert failed.");
-        }
+
 
         Toast.makeText(this, filename,Toast.LENGTH_LONG ).show()
         soundVisualizerView.stopVisualizing()
