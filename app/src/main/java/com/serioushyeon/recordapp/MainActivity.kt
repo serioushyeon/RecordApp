@@ -34,7 +34,9 @@ class MainActivity : AppCompatActivity() {
         if (jwtToken != null) {
             println(jwtToken)
             // 토큰이 존재하는 경우, 토큰 유효성 검증을 요청하거나
-            validateTokenAndProceed(jwtToken)
+            runOnUiThread {
+                validateTokenAndProceed(jwtToken)
+            }
             // 바로 메인 화면으로 이동 등의 로그인 처리를 수행
             //val intent = Intent(this, HomeActivity::class.java)
             //startActivity(intent)
@@ -72,7 +74,6 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        runOnUiThread {
                             try {
                                 if (response.isSuccessful) {
                                     val message: String = response.body!!.string()
@@ -88,25 +89,38 @@ class MainActivity : AppCompatActivity() {
                                         sharedPreferences.edit().putString("jwtToken", jwtToken).apply()
                                         sharedPreferences.edit().putString("userId", binding.editTextId.text.toString().trim { it <= ' ' })
                                             .apply()
-                                        val intent = Intent(applicationContext, HomeActivity::class.java)
-                                        startActivity(intent)
+                                        runOnUiThread {
+                                            val intent =
+                                                Intent(applicationContext, HomeActivity::class.java)
+                                            startActivity(intent)
+                                        }
                                     } else {
-                                        Toast.makeText(applicationContext, "오류 발생", Toast.LENGTH_LONG).show()
+                                        runOnUiThread {
+                                            Toast.makeText(
+                                                applicationContext,
+                                                "오류 발생",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
                                     }
                                 }else {
                                     val message: String = response.body!!.string()
                                     val jObject = JSONObject(message)
                                     val msg = jObject.getString("msg")
-                                    Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
+                                    runOnUiThread {
+                                        Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG)
+                                            .show()
+                                    }
                                 }
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
-                        }
                     }
                 })
             } else {
-                Toast.makeText(applicationContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show()
+                runOnUiThread {
+                    Toast.makeText(applicationContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         binding.btnRegister.setOnClickListener {
@@ -124,18 +138,24 @@ class MainActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 // 메인 스레드에서 UI 작업을 실행하기 위해 runOnUiThread 사용
-                runOnUiThread {
                     if (response.isSuccessful) {
                         if (response.code == 200) {
                             // 토큰이 유효한 경우, 메인 액티비티로 이동
-                            val intent = Intent(applicationContext, HomeActivity::class.java)
-                            startActivity(intent)
+                            runOnUiThread {
+                                val intent = Intent(applicationContext, HomeActivity::class.java)
+                                startActivity(intent)
+                            }
                         }
                     } else {
                         // 토큰 검증 실패 시 메시지 표시
-                        Toast.makeText(applicationContext, "토큰 검증 실패. 재로그인 해주세요.", Toast.LENGTH_LONG).show()
+                        runOnUiThread {
+                            Toast.makeText(
+                                applicationContext,
+                                "토큰 검증 실패. 재로그인 해주세요.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
-                }
             }
 
             override fun onFailure(call: Call, e: IOException) {

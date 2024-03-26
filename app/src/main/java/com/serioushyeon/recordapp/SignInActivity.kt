@@ -64,42 +64,51 @@ class SignInActivity : AppCompatActivity() {
                         }
 
                         override fun onResponse(call: Call, response: Response) {
-                            runOnUiThread {
                                 try {
                                     if (!response.isSuccessful) {
                                         // 응답 실패
                                         Log.i("tag", "응답실패")
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "네트워크 문제 발생 ${response.isSuccessful}",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        runOnUiThread {
+                                            Toast.makeText(
+                                                applicationContext,
+                                                "네트워크 문제 발생 ${response.isSuccessful}",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     } else {
                                         Log.i("tag", "응답 성공")
                                         val message: String = response.body!!.string()
                                         val jObject = JSONObject(message)
                                         val resp = jObject.getString("result")
                                         if (resp == "success") {
-                                            val intent =
-                                                Intent(applicationContext, MainActivity::class.java)
-                                            startActivity(intent)
+                                            runOnUiThread {
+                                                val intent =
+                                                    Intent(
+                                                        applicationContext,
+                                                        MainActivity::class.java
+                                                    )
+                                                startActivity(intent)
+                                            }
                                         } else {
-                                            Toast.makeText(
-                                                applicationContext,
-                                                "회원가입에 실패 했습니다.$resp",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
+                                            runOnUiThread {
+                                                Toast.makeText(
+                                                    applicationContext,
+                                                    "회원가입에 실패 했습니다.$resp",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
                                         }
                                     }
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
-                            }
                         }
                     })
                 }
             } else {
-                Toast.makeText(applicationContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show()
+                runOnUiThread {
+                    Toast.makeText(applicationContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
